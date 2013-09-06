@@ -44,6 +44,12 @@ app.get '/', checkAuth, (req, res) ->
 		messages: getMessages(req)
 		user: req.session.user
 
+app.get '/button', (req, res) ->
+	res.render 'button',
+		loggedIn: true
+		messages: getMessages(req)
+		user: req.session.user
+
 app.get '/new', (req, res) ->
 	res.render 'new',
 		loggedIn: false
