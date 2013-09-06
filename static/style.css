@@ -1,13 +1,39 @@
-body {
-	font: 16px/24px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	background: #eee;
-	width: 600px;
-	margin: 1.5rem auto;
+html {
+	height: 100%;
 }
 
 * {
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+}
+
+body {
+	font: 16px/24px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	background: #fcfcfc;
+	width: 640px;
+	margin: 0 auto;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	min-height: 100%;
+}
+
+header > form {
+	float: right;
+}
+
+header {
+	border-bottom: 1px solid #ccc;
+	background: #eee;
+	padding: 4px 10px 8px 10px;
+}
+
+.clear {
+	clear: both;
+}
+
+.content {
+	padding: 1.5em;
 }
 
 h1 {
@@ -18,4 +44,14 @@ h1 {
 h2 {
 	font-size: 16px;
 	line-height: 24px;
+}
+
+h1, h2, p {
+	margin: .75em 0;
+}
+
+a {
+	color: red;
+	text-decoration: none;
+	border-bottom: 1px solid red;
 }
