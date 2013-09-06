@@ -35,7 +35,6 @@ getMessages = (req) ->
 	req.session.messages = []
 	result
 
-
 app.get '/', checkAuth, (req, res) ->
 	res.render 'index',
 		loggedIn: true
