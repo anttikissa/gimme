@@ -15,6 +15,7 @@ app.set 'view engine', 'ejs'
 app.use express.bodyParser()
 app.use express.cookieParser()
 app.use express.session secret: config.sessionSecret
+app.use express.static './static'
 
 # auth middleware
 checkAuth = (req, res, next) ->
