@@ -4,6 +4,6 @@ cd $(dirname $0)
 
 while true
 do
-	coffee src/index.coffee
+	./node_modules/.bin/coffee src/index.coffee
 done
 
