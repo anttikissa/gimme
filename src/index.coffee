@@ -1,5 +1,7 @@
 express = require 'express'
 
+user = require './user'
+
 app = express()
 
 app.get '/', (req, res) ->
@@ -15,3 +17,6 @@ process.on 'uncaughtException', (err) ->
 
 app.listen port, (err, result) ->
 	console.log "Listening to http://localhost:#{port}/"
+
+# test stack trace
+user.f()
