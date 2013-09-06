@@ -30,8 +30,14 @@ checkAuth = (req, res, next) ->
 	else
 		next()
         
-userDonatedCount = (user, url) ->
-    1
+userDonatedCount = (user, url, cb) ->
+	db.queryRow 'select * from donates where url = ? and user_id = ?',
+		[ url, user ], (err, result) ->
+			log "query donates err", err, result, "result"
+			if !result
+				cb null, 0
+			else
+				cb null, result.donates
 
 pushMessage = (req, msg) ->
 	req.session.messages ||= []
@@ -50,17 +56,28 @@ app.get '/', checkAuth, (req, res) ->
 
 app.get '/button', (req, res) ->
 	url = req.headers['referer']
+	url = 'http://google.fi/'
+	log "url is #{url}"
 
-	if isLoggedIn(req) && userDonatedCount(req.session.user, url) > 0
+	log "req.session.user", req.session.user
+
+	if !isLoggedIn(req)
 		res.render 'button',
-            hasDonated: true
-			loggedIn: true
-			user: req.session.user
-	else
-		res.render 'button',
-            hasDonated: false
+			donateCount: 0
 			loggedIn: false
 			user: req.session.user
+	else
+		userDonatedCount req.session.user.id, url, (err, count) ->
+			if count > 0
+				res.render 'button',
+					donateCount: count
+					loggedIn: true
+					user: req.session.user
+			else
+				res.render 'button',
+					donateCount: count
+					loggedIn: false
+					user: req.session.user
 
 app.get '/new', (req, res) ->
 	res.render 'new',
@@ -123,6 +140,13 @@ initDb = ->
 			donates integer,
 			foreign key(user_id) references user(id)
 		)"""
+	db.ignoreErrors """
+		insert into donates values (
+			'http://google.fi/',
+			'test',
+			4
+		)"""
+
 
 initDb()
 
