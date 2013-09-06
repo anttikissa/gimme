@@ -6,5 +6,12 @@ app.get '/', (req, res) ->
 	res.end 'Maximum awesome'
 
 port = 3000
-app.listen(port)
-console.log "Listening to http://localhost:#{port}/"
+
+process.on 'uncaughtException', (err) ->
+	if err.code == 'EADDRINUSE'
+		console.log "Port #{3000} already in use."
+	else
+		console.log "Error: #{err}"
+
+app.listen port, (err, result) ->
+	console.log "Listening to http://localhost:#{port}/"
