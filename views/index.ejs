@@ -11,7 +11,6 @@ Logged in as <%= user.id %>. <a href='/logout'>Log out</a>
 
 <% } else { %>
 
-
 		<form method=post action='/login'>
 			User <input name=user type=text value=user>
 			Password <input name=password type=password value='password'>
@@ -35,7 +34,7 @@ Logged in as <%= user.id %>. <a href='/logout'>Log out</a>
 	<h1>Hi there!</h1>
 
 <% if (loggedIn) { %>
-	<h2>Hi, <%= user.name %>!</h2>
+	<h2>Hi, <%= user.id %>!</h2>
 <% } else { %>
 <h2><a href='/new'>Create a new account here</a>.</h2>
 <% } %>

@@ -41,12 +41,38 @@ app.get '/', checkAuth, (req, res) ->
 		messages: getMessages(req)
 		user: req.session.user
 
+app.get '/new', (req, res) ->
+	res.render 'new',
+		loggedIn: false
+		messages: getMessages(req)
+
+app.post '/new', (req, res) ->
+	body = req.body
+	fail = false
+	whoops = (msg) ->
+		fail = true
+
+	fail = false
+	if !body.user?
+		pushMessage req, "Username missing"
+		fail = true
+	if !body.password?
+		pushMessage req, "Password missing"
+		fail = true
+	
+	if fail
+		res.render 'new',
+			loggedIn: false,
+			messages: getMessages(req)
+	else
+		pushMessage(req, "Account #{body.user} created. You can now log in.")
+		res.redirect '/'
+
 app.post '/login', (req, res) ->
 	body = req.body
 	if body.user == 'test' && body.password = 'pass'
 		req.session.user =
 			id: 'test'
-			name: 'Test User'
 		res.redirect '/'
 	else
 		pushMessage req, 'Invalid username or password.'
