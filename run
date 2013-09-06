@@ -4,12 +4,17 @@ cd $(dirname $0)
 
 while true
 do
-	./node_modules/.bin/coffee src/index.coffee
+	./node_modules/.bin/coffee src/index.coffee -c
 	result=$?
 	if [ $result != 0 ]
 	then
-		echo "Server crashed (return code $result), trying again soon."
-		sleep 1
+		if [ $result == 100 ]
+		then
+			echo "Restarting."
+		else
+			echo "Server crashed (return code $result), trying again soon."
+			sleep 1
+		fi
 	else
 		exit
 	fi

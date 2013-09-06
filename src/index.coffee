@@ -1,7 +1,11 @@
 express = require 'express'
+log = require 'basic-log'
 
 user = require './user'
 config = require './config'
+parseArgs = require('./args').parseArgs
+
+args = parseArgs()
 
 app = express()
 
@@ -38,15 +42,40 @@ port = 3000
 
 process.on 'uncaughtException', (err) ->
 	if err.code == 'EADDRINUSE'
-		console.log "Port #{3000} already in use."
+		log "Port #{3000} already in use."
 		process.exit(1)
 
 	throw err
 
 # Catch CTRL-C
 process.on 'SIGINT', ->
-	console.log 'quit'
+	log 'quit'
 	process.exit()
 
 app.listen port, (err, result) ->
-	console.log "Listening to http://localhost:#{port}/"
+	log "Listening to http://localhost:#{port}/"
+
+	if args.console
+		repl = require 'repl'
+
+		r = repl.start
+			prompt: '> '
+			eval: (cmd, c, f, cb) ->
+				cmd = cmd.replace(/^\(/, '')
+				cmd = cmd.replace(/\n\)$/, '')
+				help = """
+					q, quit:   quit
+					<enter>:   restart (terminate with code 100)
+				"""
+
+				resp = switch cmd
+					when 'q', 'quit', 'exit' then process.exit(0)
+					when '' then process.exit(100)
+					when 'h', 'help' then help
+					else "Unknown command #{cmd}\n\n" + help
+
+				cb(resp)
+		r.on 'exit', -> process.exit(100)
+
+
+
