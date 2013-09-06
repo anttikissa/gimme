@@ -97,9 +97,21 @@ app.get '/test', (req, res) ->
 		res.end "got row " + JSON.stringify row
 
 initDb = ->
-	db.run 'create table user (id varchar(64), pass varchar(64), balance integer)'
-	db.run "insert into user values ('test1', 'pass1', 5)"
-	db.run "insert into user values ('test2', 'test2', 10)"
+	db.ignoreErrors """
+		create table user (
+			id varchar(64) primary key,
+			pass varchar(64),
+			balance integer
+		)"""
+	db.ignoreErrors "insert into user values ('test1', 'pass1', 5)"
+	db.ignoreErrors "insert into user values ('test2', 'test2', 10)"
+	db.ignoreErrors """
+		create table donates (
+			url varchar(256) primary key,
+			user_id varchar(64),
+			donates integer,
+			foreign key(user_id) references user(id)
+		)"""
 
 initDb()
 
@@ -141,6 +153,4 @@ app.listen port, (err, result) ->
 
 				cb(resp)
 		r.on 'exit', -> process.exit(100)
-
-
 

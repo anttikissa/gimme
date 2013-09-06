@@ -1,10 +1,22 @@
 sqlite = require('sqlite3').verbose()
-db = new sqlite.Database(':memory:')
+db = new sqlite.Database('gimme.db')
 log = require 'basic-log'
 
 db.serialize()
 
 module.exports =
+	ignoreErrors: (sql, args, cb) ->
+		if args?
+			log "db.ignoreErrors:", sql, args
+		else
+			log "db.ignoreErrors:", sql
+		db.run sql, args, (err, result) ->
+			if err
+				log "db.ignoreErrors: ignoring harmless error " + err
+
+			if cb
+				cb null, result
+
 	run: (sql, args, cb) ->
 		if args?
 			log "db.run:", sql, args
