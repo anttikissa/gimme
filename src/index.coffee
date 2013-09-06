@@ -17,9 +17,12 @@ app.use express.cookieParser()
 app.use express.session secret: config.sessionSecret
 app.use express.static './static'
 
+isLoggedIn = (req) ->
+	req.session.user?
+
 # auth middleware
 checkAuth = (req, res, next) ->
-	if !req.session.user?
+	if !isLoggedIn(req)
 		res.render 'index',
 			messages: getMessages(req)
 			loggedIn: false
