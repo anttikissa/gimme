@@ -8,7 +8,7 @@
 
 <% if (loggedIn) { %>
 
-Logged in as <%= user.id %>. <a href='/logout'>Log out</a>
+		<p>Logged in as <%= user.id %>. <a href='/logout'>Log out</a>
 
 <% } else { %>
 
@@ -20,7 +20,9 @@ Logged in as <%= user.id %>. <a href='/logout'>Log out</a>
 
 <% } %>
 
+	<div class='clear'></div>
 	</header>
+
 
 <% if (messages.length) { %>
 
@@ -32,27 +34,32 @@ Logged in as <%= user.id %>. <a href='/logout'>Log out</a>
 
 <% } %>
 
-	<h1>Hi there!</h1>
-
+	<div class='content'>
+		<h1>Hi there!</h1>
 <% if (loggedIn) { %>
-	<h2>Hi, <%= user.id %>!</h2>
+
+		<h2>Hi, <%= user.id %>!</h2>
 <% } else { %>
-<h2><a href='/new'>Create a new account here</a>.</h2>
+
+<p>Create a new account <a href='/new'>here</a>.
+
 <% } %>
 
-<p style='display: none'>Hello hello hell
-		Hello hello hell
-		Hello hello hell
-		Hello hello hell
-		Hello hello hell
+		<p style=''>Hello hello hell
 			Hello hello hell
-				Hello hello hell
 			Hello hello hell
-				Hello hello hell
 			Hello hello hell
-				Hello hello hell
 			Hello hello hell
 				Hello hello hell
 					Hello hello hell
-						Hello hello helloooooo
+				Hello hello hell
+					Hello hello hell
+				Hello hello hell
+					Hello hello hell
+				Hello hello hell
+					Hello hello hell
+						Hello hello hell
+							Hello hello helloooooo
+
+	</div>
 </body>

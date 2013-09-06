@@ -1,13 +1,59 @@
-body {
-	font: 16px/24px 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	background: #eee;
-	width: 600px;
-	margin: 1.5rem auto;
+html {
+	height: 100%;
 }
 
 * {
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
+}
+
+body {
+	font: 16px/24px 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	background: #fcfcfc;
+	width: 640px;
+	margin: 0 auto;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+	min-height: 100%;
+}
+
+header > form, header > p {
+	float: right;
+	margin: 0;
+}
+
+header > form input {
+	width: 5rem;
+}
+
+header > p {
+	font-size: 14px;
+}
+
+header {
+	border-bottom: 1px solid #ccc;
+	background: #eee;
+	padding: 6px 1.5em 8px 1.5em;
+}
+
+.clear {
+	clear: both;
+}
+
+.content {
+	margin: 1.5em;
+}
+
+.messages {
+	padding: 0.5em;
+	margin: 1.5em 1.5em 0 1.5em;
+	border: 1px solid #888;
+	border-radius: 4px;
+}
+
+.message {
+	color: #e92a28;
 }
 
 h1 {
@@ -18,4 +64,14 @@ h1 {
 h2 {
 	font-size: 16px;
 	line-height: 24px;
+}
+
+h1, h2, p {
+	margin: .75em 0;
+}
+
+a {
+	color: #008800;
+	text-decoration: none;
+	border-bottom: 1px solid #008800;
 }
