@@ -39,6 +39,12 @@ userDonatedCount = (user, url, cb) ->
 			else
 				cb null, result.donates
 
+donate = (user, url, cb) ->
+	# TODO deduct balance
+	sql = 'update donates set donates = donates + 1 where user_id = ? and url = ?'
+	db.run sql, [ user, url ], (err, result) ->
+		cb null, 'ok'
+
 pushMessage = (req, msg) ->
 	req.session.messages ||= []
 	req.session.messages.push msg
