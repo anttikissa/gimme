@@ -28,6 +28,9 @@ checkAuth = (req, res, next) ->
 			loggedIn: false
 	else
 		next()
+        
+userDonatedCount = (user, url) ->
+    1
 
 pushMessage = (req, msg) ->
 	req.session.messages ||= []
@@ -45,10 +48,18 @@ app.get '/', checkAuth, (req, res) ->
 		user: req.session.user
 
 app.get '/button', (req, res) ->
-	res.render 'button',
-		loggedIn: true
-		messages: getMessages(req)
-		user: req.session.user
+	url = req.headers['referer']
+
+	if isLoggedIn(req) && userDonatedCount(req.session.user, url) > 0
+		res.render 'button',
+            hasDonated: true
+			loggedIn: true
+			user: req.session.user
+	else
+		res.render 'button',
+            hasDonated: false
+			loggedIn: false
+			user: req.session.user
 
 app.get '/new', (req, res) ->
 	res.render 'new',
