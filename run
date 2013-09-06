@@ -5,5 +5,13 @@ cd $(dirname $0)
 while true
 do
 	./node_modules/.bin/coffee src/index.coffee
+	result=$?
+	if [ $result != 0 ]
+	then
+		echo "Server crashed (return code $result), trying again soon."
+		sleep 1
+	else
+		exit
+	fi
 done
 

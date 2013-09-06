@@ -12,11 +12,13 @@ port = 3000
 process.on 'uncaughtException', (err) ->
 	if err.code == 'EADDRINUSE'
 		console.log "Port #{3000} already in use."
-	else
-		console.log "Error: #{err}"
+	throw err
+
+# Catch CTRL-C
+process.on 'SIGINT', ->
+	console.log 'quit'
+	process.exit()
 
 app.listen port, (err, result) ->
 	console.log "Listening to http://localhost:#{port}/"
 
-# test stack trace
-user.f()
