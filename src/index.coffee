@@ -12,6 +12,8 @@ port = 3000
 process.on 'uncaughtException', (err) ->
 	if err.code == 'EADDRINUSE'
 		console.log "Port #{3000} already in use."
+		process.exit(1)
+
 	throw err
 
 # Catch CTRL-C
