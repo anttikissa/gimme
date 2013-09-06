@@ -18,24 +18,42 @@ app.use express.session secret: config.sessionSecret
 
 # auth middleware
 checkAuth = (req, res, next) ->
-	if !req.session.userId
-		res.render 'index'
+	if !req.session.user?
+		res.render 'index',
+			messages: getMessages(req)
+			loggedIn: false
 	else
 		next()
 
+pushMessage = (req, msg) ->
+	req.session.messages ||= []
+	req.session.messages.push msg
+
+getMessages = (req) ->
+	result = req.session.messages || []
+	req.session.messages = []
+	result
+
+
 app.get '/', checkAuth, (req, res) ->
-	res.end 'Maximum awesome'
+	res.render 'index',
+		loggedIn: true
+		messages: getMessages(req)
+		user: req.session.user
 
 app.post '/login', (req, res) ->
 	body = req.body
 	if body.user == 'test' && body.password = 'pass'
-		req.session.userId = 'test'
+		req.session.user =
+			id: 'test'
+			name: 'Test User'
 		res.redirect '/'
 	else
-		res.end 'Invalid username/password'
+		pushMessage req, 'Invalid username or password.'
+		res.redirect '/'
 
 app.get '/logout', (req, res) ->
-	delete req.session.userId
+	delete req.session.user
 	res.redirect '/'
 
 port = 3000

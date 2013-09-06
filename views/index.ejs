@@ -2,9 +2,42 @@
 <meta charset=utf-8>
 <title>Hi</title>
 <body>
-	<form method=post action='/login'>
-		User <input name=user type=text>
-		Password <input name=password type=password>
-		<input type=submit value='Log in'>
-	</form>
+
+	<header>
+
+<% if (loggedIn) { %>
+
+Logged in as <%= user.id %>. <a href='/logout'>Log out</a>
+
+<% } else { %>
+
+
+		<form method=post action='/login'>
+			User <input name=user type=text value=user>
+			Password <input name=password type=password value='password'>
+			<input type=submit value='Log in'>
+		</form>
+
+<% } %>
+
+	</header>
+
+<% if (messages.length) { %>
+
+	<div class='messages'>
+	<% for (var i = 0; i < messages.length; i++) { %>
+		<div class='message'><%= messages[i] %></div>
+	<% } %>
+	</div>
+
+<% } %>
+
+	<h1>Hi there!</h1>
+
+<% if (loggedIn) { %>
+	<h2>Hi, <%= user.name %>!</h2>
+<% } else { %>
+<h2><a href='/new'>Create a new account here</a>.</h2>
+<% } %>
+
 </body>
