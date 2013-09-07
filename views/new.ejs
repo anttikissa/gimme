@@ -7,6 +7,17 @@
 		<p>&nbsp;</p>
 		<div class='clear'></div>
 	</header>
+
+<% if (messages.length) { %>
+
+	<div class='messages'>
+	<% for (var i = 0; i < messages.length; i++) { %>
+		<div class='message'><%= messages[i] %></div>
+	<% } %>
+	</div>
+
+<% } %>
+
 	<div class='content'>
 		<h1>Hi there.</h1>
 

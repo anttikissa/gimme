@@ -1,13 +1,18 @@
 db = require './db'
+log = require 'basic-log'
 
 module.exports =
 	# List all users
 	list: (cb) ->
-		cb null, [{ id: 'foo', balance: 123 }]
+		db.queryRows 'select id, balance from users', [], (err, rows) ->
+			cb null, rows
 
 	# User details
-	getData: (id, cb) ->
-		cb null, { id: id, balance: 15 }
+	getUser: (id, cb) ->
+		db.queryRow "select id, balance from users where id=?",
+			[id],
+			(err, result) ->
+				cb null, result
 
 	# List of all donates
 	getDonates: (id, cb) ->
@@ -19,9 +24,28 @@ module.exports =
 
 	# Is user-password combination ok?
 	checkPassword: (id, pass, cb) ->
-		cb null, true
+		db.queryRow "select pass from users where id=?", [id], (err, result) ->
+			if !result
+				cb null, false
+			else if result.pass != pass
+				cb null, false
+			else
+				cb null, true
+
+	# Change password.
+	# Return true if change was successful. 
+	changePassword: (id, oldPass, newPass, cb) ->
+		throw "TODO"
 
 	# Create new user, return false if already exists
 	newUser: (id, pass, cb) ->
-		cb null, true
+		this.getUser id, (err, existingUser) ->
+			if existingUser?
+				cb null, false
+			else
+				db.run 'insert into users (id, pass, balance) values (?, ?, 0)',
+					[id, pass],
+					# This will never fail (of course!)
+					(err, result) ->
+						cb null, true
 

@@ -7,35 +7,35 @@ db.serialize()
 module.exports =
 	ignoreErrors: (sql, args, cb) ->
 		if args?
-			log "db.ignoreErrors:", sql, args
+			log.d "db.ignoreErrors:", sql, args
 		else
-			log "db.ignoreErrors:", sql
+			log.d "db.ignoreErrors:", sql
 		db.run sql, args, (err, result) ->
 			if err
-				log "db.ignoreErrors: ignoring harmless error " + err
+				log.d "db.ignoreErrors: ignoring harmless error " + err
 
 			if cb
 				cb null, result
 
 	run: (sql, args, cb) ->
 		if args?
-			log "db.run:", sql, args
+			log.d "db.run:", sql, args
 		else
-			log "db.run:", sql
+			log.d "db.run:", sql
 		db.run sql, args, cb
 		
 	queryRow: (sql, args, cb) ->
 		if args?
-			log "db.queryRow:", sql, args
+			log.d "db.queryRow:", sql, args
 		else
-			log "db.queryRow:", sql
+			log.d "db.queryRow:", sql
 		db.get sql, args, cb
 
 	queryRows: (sql, args, cb) ->
 		if args?
-			log "db.queryRows:", sql, args
+			log.d "db.queryRows:", sql, args
 		else
-			log "db.queryRows:", sql
+			log.d "db.queryRows:", sql
 		db.all sql, args, cb
 
 	# Create tables and inject some test data.
@@ -43,7 +43,7 @@ module.exports =
 	init: ->
 		this.ignoreErrors """
 			create table users (
-				id varchar(64) primary key,
+				id varchar(64) primary key not null,
 				pass varchar(64),
 				balance integer
 			)"""
@@ -51,7 +51,7 @@ module.exports =
 		this.ignoreErrors "insert into users values ('test2', 'test2', 10)"
 		this.ignoreErrors """
 			create table donates (
-				url varchar(256) primary key,
+				url varchar(256) primary key not null,
 				user_id varchar(64),
 				donates integer,
 				foreign key(user_id) references user(id)

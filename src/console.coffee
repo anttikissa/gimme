@@ -1,6 +1,7 @@
 log = require 'basic-log'
 db = require './db'
 _ = require 'underscore'
+user = require './user'
 
 sum = (list) -> list.reduce ((a, b) -> a + b), 0
 
@@ -19,9 +20,8 @@ module.exports.start = ->
 			"""
 
 			users = (cb) ->
-				db.queryRows 'select * from users', [], (err, rows) ->
+				user.list (err, rows) ->
 					totalBalance = sum(_.pluck rows, 'balance')
-					log totalBalance
 					cb err,
 						users: rows
 						totalBalance: totalBalance

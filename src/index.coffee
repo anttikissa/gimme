@@ -8,6 +8,8 @@ parseArgs = require('./args').parseArgs
 
 args = parseArgs()
 
+log.setLevel 'info'
+
 app = express()
 
 app.set 'view engine', 'ejs'
@@ -121,6 +123,7 @@ app.get '/new', (req, res) ->
 
 app.post '/new', (req, res) ->
 	body = req.body
+
 	fail = false
 	whoops = (msg) ->
 		fail = true
@@ -138,18 +141,28 @@ app.post '/new', (req, res) ->
 			loggedIn: false,
 			messages: getMessages(req)
 	else
-		pushMessage(req, "Account #{body.user} created. You can now log in.")
-		res.redirect '/'
+		user.newUser body.user, body.password, (err, result) ->
+			if result
+				pushMessage(req, "Account #{body.user} created. You can now log in.")
+				res.redirect '/'
+			else
+				pushMessage(req, "Username already exists.")
+				res.render 'new',
+					loggedIn: false,
+					messages: getMessages(req)
 
 app.post '/login', (req, res) ->
 	body = req.body
-	if body.user == 'test' && body.password = 'pass'
-		req.session.user =
-			id: 'test'
-		res.redirect '/'
-	else
-		pushMessage req, 'Invalid username or password.'
-		res.redirect '/'
+	user.checkPassword body.user, body.password, (err, result) ->
+		if result
+			log "RESULT TRUE"
+			req.session.user =
+				id: body.user
+			res.redirect '/'
+		else
+			pushMessage req, 'Invalid username or password.'
+			log "RESULT UNTRUE"
+			res.redirect '/'
 
 app.get '/logout', (req, res) ->
 	delete req.session.user
