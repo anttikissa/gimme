@@ -57,11 +57,11 @@ getMessages = (req) ->
 	result
 
 app.get '/', checkAuth, (req, res) ->
-	# TODO USER 
-	res.render 'index',
-		loggedIn: true
-		messages: getMessages(req)
-		user: { id: req.session.userId }
+	user.getUser req.session.userId, (err, u) ->
+		res.render 'index',
+			loggedIn: true
+			messages: getMessages(req)
+			user: u
 
 app.get '/button', (req, res) ->
 	url = req.headers['referer']
