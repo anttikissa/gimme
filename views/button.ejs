@@ -8,24 +8,26 @@
     <link rel=stylesheet href='//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css'>
   </head>
   <body>
-    <form>
+	<form method="POST" >
+		<input type="hidden" name="url" value="<%= url %>">
 		<% if (donateCount == 0) { %>
-        <button class="gimme-button btn btn-small btn-primary" type="submit">
-            <i class="glyphicon glyphicon-fire"></i>
-            Gimme
-        </button>
-        
-        <% } else { %>
+		
+		<button class="gimme-button btn btn-small btn-primary" type="submit">
+			<i class="glyphicon glyphicon-fire"></i>
+			Gimme
+		</button>
 
-        <button class="gimme-thanks btn btn-small btn-success" type="button">
-            <i class="glyphicon glyphicon-heart"></i>
-            Thanks!
-        </button>
+		<% } else { %>
+
+		<button class="gimme-thanks btn btn-small btn-success" type="submit">
+			<i class="glyphicon glyphicon-heart"></i>
+			Thanks!
+		</button>
 		<p><%= donateCount %> donates
 
-        <% } %>
+		<% } %>
 
-    </form>
-    <small>X number of people have donated Y btc</small>
+	</form>
+	<small>X number of people have donated Y btc</small>
   </body>
 </html>
