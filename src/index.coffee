@@ -129,8 +129,8 @@ app.get '/new', (req, res) ->
 	res.render 'new',
 		loggedIn: false
 		messages: getMessages(req)
-
-app.post '/new', (req, res) ->
+		
+newHandler = (req, res) ->
 	body = req.body
 
 	fail = false
@@ -153,13 +153,20 @@ app.post '/new', (req, res) ->
 		user.newUser body.user, body.password, (err, result) ->
 			if result
 				pushMessage(req, "Account #{body.user} created. You can now log in.")
-				res.redirect '/'
+				res.redirect '/welcome'
 			else
 				pushMessage(req, "Username already exists.")
 				res.render 'new',
 					loggedIn: false,
 					messages: getMessages(req)
+					
+app.post '/new', newHandler
 
+app.get '/login', (req, res) ->
+	res.render 'login',
+		loggedIn: false
+		messages: getMessages(req)
+		
 app.post '/login', (req, res) ->
 	body = req.body
 	user.checkPassword body.user, body.password, (err, result) ->
@@ -167,9 +174,15 @@ app.post '/login', (req, res) ->
 			req.session.userId = body.user
 			res.redirect '/'
 		else
-			pushMessage req, 'Invalid username or password.'
-			res.redirect '/'
+			newHandler req, res
 
+app.get '/welcome', (req, res) ->
+	user.getUser req.session.userId, (err, u) ->
+		res.render 'welcome',
+			loggedIn: true
+			messages: getMessages(req)
+			user: u
+			
 app.get '/logout', (req, res) ->
 	delete req.session.userId
 	res.redirect '/'

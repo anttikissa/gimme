@@ -5,7 +5,25 @@
 <link rel=stylesheet href='//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css'>
 <body>
 
+<div class="container">
+
+      <form method='post' action='/login' class='form-signin' role='form'>
+        <h2 class="form-signin-heading">Login into Gimme</h2>
+        <input name="user" id="user" type="text" class="form-control" placeholder="Email address" autofocus>
+        <input name="password" id="password" type="password" class="form-control" placeholder="Password">
+        <small>If you don't have an account already, don't worry, we'll create one for you.</small>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Let's go</button>
+		
+      </form>
+
+    </div> <!-- /container -->
+<!--
 <form method='post' action='/login' class='form-inline' role='form'>
+<div class="panel panel-primary">
+<div class="panel-heading">
+    <h3 class="panel-title">Login into your Gimme wallet</h3>
+  </div>
+<div class="panel-body">
   <div class='form-group'>
     <label class='sr-only' for='user'>Email</label>
     <input type='email' class='form-control' id='user' placeholder='Enter email'>
@@ -14,9 +32,16 @@
     <label class='sr-only' for='password'>Password</label>
     <input type='password' class='form-control' id='password' placeholder='Password'>
   </div>
-  <button type='submit' class='btn btn-default'>Login</button>
+  
+  <button type='submit' class='btn btn-primary'>Let's go</button>
+
+</div>
+<div class="panel-footer"></div>
+</div>
 </form>
-	
+
+-->
+
 <% if (messages.length) { %>
 
 	<div class='messages'>
@@ -27,5 +52,7 @@
 
 <% } %>
 <!-- <button type='button' class='btn btn-primary btn-lg btn-block'>Register</button> -->
+</div>
+
 
 </body>
