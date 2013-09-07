@@ -9,7 +9,7 @@ parseArgs = require('./args').parseArgs
 
 args = parseArgs()
 
-# log.setLevel 'info'
+log.setLevel 'info'
 
 app = express()
 
