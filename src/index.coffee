@@ -132,13 +132,13 @@ app.get '/test', (req, res) ->
 
 initDb = ->
 	db.ignoreErrors """
-		create table user (
+		create table users (
 			id varchar(64) primary key,
 			pass varchar(64),
 			balance integer
 		)"""
-	db.ignoreErrors "insert into user values ('test1', 'pass1', 5)"
-	db.ignoreErrors "insert into user values ('test2', 'test2', 10)"
+	db.ignoreErrors "insert into users values ('test1', 'pass1', 5)"
+	db.ignoreErrors "insert into users values ('test2', 'test2', 10)"
 	db.ignoreErrors """
 		create table donates (
 			url varchar(256) primary key,
@@ -174,24 +174,5 @@ app.listen port, (err, result) ->
 	log "Listening to http://localhost:#{port}/"
 
 	if args.console
-		repl = require 'repl'
-
-		r = repl.start
-			prompt: '> '
-			eval: (cmd, c, f, cb) ->
-				cmd = cmd.replace(/^\(/, '')
-				cmd = cmd.replace(/\n\)$/, '')
-				help = """
-					q, quit:   quit
-					<enter>:   restart (terminate with code 100)
-				"""
-
-				resp = switch cmd
-					when 'q', 'quit', 'exit' then process.exit(0)
-					when '' then process.exit(100)
-					when 'h', 'help' then help
-					else "Unknown command #{cmd}\n\n" + help
-
-				cb(resp)
-		r.on 'exit', -> process.exit(100)
+		require('./console').start()
 
