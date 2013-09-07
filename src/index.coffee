@@ -9,7 +9,7 @@ parseArgs = require('./args').parseArgs
 
 args = parseArgs()
 
-log.setLevel 'info'
+# log.setLevel 'info'
 
 app = express()
 
@@ -33,21 +33,6 @@ checkAuth = (req, res, next) ->
 	else
 		next()
         
-userDonatedCount = (user, url, cb) ->
-	db.queryRow 'select * from donates where url = ? and user_id = ?',
-		[ url, user ], (err, result) ->
-			log "query donates err", err, result, "result"
-			if !result
-				cb null, 0
-			else
-				cb null, result.donates
-
-donate = (user, url, cb) ->
-	# TODO deduct balance
-	sql = 'update donates set donates = donates + 1 where user_id = ? and url = ?'
-	db.run sql, [ user, url ], (err, result) ->
-		cb null, 'ok'
-
 pushMessage = (req, msg) ->
 	req.session.messages ||= []
 	req.session.messages.push msg
@@ -71,27 +56,27 @@ app.get '/button', (req, res) ->
 	url ||= 'http://google.fi/'
 	log "Button called from #{url}."
 
-	donates.getDonates url, (err, donates) ->
+	donates.getDonates url, (err, totalDonates) ->
 		if !isLoggedIn(req)
 			res.render 'button',
 				donateCount: 0
-				donates: donates
+				donates: totalDonates
 				loggedIn: false
 				url: url
 		else
 			# TODO USER
-			userDonatedCount req.session.userId, url, (err, count) ->
+			donates.getDonateCount req.session.userId, url, (err, count) ->
 				if count > 0
 					res.render 'button',
 						donateCount: count
-						donates: donates
+						donates: totalDonates
 						loggedIn: true
 						user: { id: req.session.userId }
 						url: url
 				else
 					res.render 'button',
 						donateCount: count
-						donates: donates
+						donates: totalDonates
 						loggedIn: false
 						user: {id: req.session.userId }
 						url: url
@@ -101,7 +86,7 @@ app.post '/button', (req, res) ->
 	url ||= 'http://google.fi/'
 	log "Button pressed for #{url}."
 
-	donates.getDonates url, (err, donates) ->
+	donates.getDonates url, (err, totalDonates) ->
 		# TODO what do we want to do in this case actually?
 		if !isLoggedIn(req)
 			res.render 'index',
@@ -109,18 +94,21 @@ app.post '/button', (req, res) ->
 				messages: getMessages(req)
 		else
 			# TODO USER
-			donate req.session.userId, url, (err, msg) ->
+			donates.donate req.session.userId, url, (err, msg) ->
 				if msg == 'ok'
-					userDonatedCount req.session.userId, url, (err, count) ->
+					donates.getDonateCount req.session.userId, url, (err, count) ->
 						res.render 'button',
 							donateCount: count
-							donates: donates + 1
+							donates: totalDonates + 1
 							loggedIn: true
 							user: { id: req.session.userId }
 							url: url
 				else
+					log "FAILED TO DONATE, msg", msg
 					res.render 'button',
 							error: 'Could not donate'
+							donateCount: 0
+							donates: totalDonates
 							loggedIn: true
 							messages: getMessages(req)
 							url: url

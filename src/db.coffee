@@ -57,8 +57,8 @@ module.exports =
 				primary key(url, user_id),
 				foreign key(user_id) references user(id)
 			)"""
-		this.ignoreErrors "insert into donates values ('http://google.fi/', 'test1', 5)"
-		this.ignoreErrors "insert into donates values ('http://google.fi/', 'test2', 4)"
-		this.ignoreErrors "insert into donates values ('http://cats.sykari.net/', 'test1', 6)"
+#		this.ignoreErrors "insert into donates values ('http://google.fi/', 'test1', 5)"
+#		this.ignoreErrors "insert into donates values ('http://google.fi/', 'test2', 4)"
+#		this.ignoreErrors "insert into donates values ('http://cats.sykari.net/', 'test1', 6)"
 
 
