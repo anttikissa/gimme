@@ -21,7 +21,7 @@ app.use express.session secret: config.sessionSecret
 app.use express.static './static'
 
 isLoggedIn = (req) ->
-	req.session.user?
+	req.session.userId?
 
 # auth middleware
 checkAuth = (req, res, next) ->
@@ -57,57 +57,54 @@ getMessages = (req) ->
 	result
 
 app.get '/', checkAuth, (req, res) ->
+	# TODO USER 
 	res.render 'index',
 		loggedIn: true
 		messages: getMessages(req)
-		user: req.session.user
+		user: { id: req.session.userId }
 
 app.get '/button', (req, res) ->
 	url = req.headers['referer']
 	url = 'http://google.fi/'
-	log "url is #{url}"
-
-	log "req.session.user", req.session.user
 
 	if !isLoggedIn(req)
 		res.render 'button',
 			donateCount: 0
 			loggedIn: false
-			user: req.session.user
 			url: url
 	else
-		userDonatedCount req.session.user.id, url, (err, count) ->
+		# TODO USER
+		userDonatedCount req.session.userId, url, (err, count) ->
 			if count > 0
 				res.render 'button',
 					donateCount: count
 					loggedIn: true
-					user: req.session.user
+					user: { id: req.session.userId }
 					url: url
 			else
 				res.render 'button',
 					donateCount: count
 					loggedIn: false
-					user: req.session.user
+					user: {id: req.session.userId }
 					url: url
 					
 app.post '/button', (req, res) ->
 	url = req.body.url;
 	log "url is #{url}"
 
-	log "req.session.user", req.session.user
-
 	if !isLoggedIn(req)
 		res.render 'index',
 			loggedIn: false
 			messages: getMessages(req)
 	else
-		donate req.session.user.id, url, (err, msg) ->
+		# TODO USER
+		donate req.session.userId, url, (err, msg) ->
 			if msg == 'ok'
-				userDonatedCount req.session.user.id, url, (err, count) ->
+				userDonatedCount req.session.userId, url, (err, count) ->
 					res.render 'button',
 						donateCount: count
 						loggedIn: true
-						user: req.session.user
+						user: { id: req.session.userId }
 						url: url
 			else
 				res.render 'button',
@@ -155,17 +152,14 @@ app.post '/login', (req, res) ->
 	body = req.body
 	user.checkPassword body.user, body.password, (err, result) ->
 		if result
-			log "RESULT TRUE"
-			req.session.user =
-				id: body.user
+			req.session.userId = body.user
 			res.redirect '/'
 		else
 			pushMessage req, 'Invalid username or password.'
-			log "RESULT UNTRUE"
 			res.redirect '/'
 
 app.get '/logout', (req, res) ->
-	delete req.session.user
+	delete req.session.userId
 	res.redirect '/'
 
 db.init()

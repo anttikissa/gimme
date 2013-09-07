@@ -38,27 +38,18 @@
 <% if (loggedIn) { %>
 
 		<h2>Hi, <%= user.id %>!</h2>
+
+		<p>Balance: <%= user.balance %>
+		<p>Transfer X bitcoins to address 1blahblahblahblahblahblahblahblahblah to load up your account balance!
+
 <% } else { %>
 
-<p>Create a new account <a href='/new'>here</a>.
+		<h2>The Gimme button is the awesomest way to collect micro-donations.</h2>
+
+		<p>Try it: <iframe src='/button' style='border: 1px solid #ccc; vertical-align: -40px' width=150 height=80></iframe>
+
+		<p>Create a new account <a href='/new'>here</a> to get started!
 
 <% } %>
-
-		<p style=''>Hello hello hell
-			Hello hello hell
-			Hello hello hell
-			Hello hello hell
-			Hello hello hell
-				Hello hello hell
-					Hello hello hell
-				Hello hello hell
-					Hello hello hell
-				Hello hello hell
-					Hello hello hell
-				Hello hello hell
-					Hello hello hell
-						Hello hello hell
-							Hello hello helloooooo
-
 	</div>
 </body>
