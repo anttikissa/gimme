@@ -72,6 +72,7 @@ app.get '/button', (req, res) ->
 			donateCount: 0
 			loggedIn: false
 			user: req.session.user
+			url: url
 	else
 		userDonatedCount req.session.user.id, url, (err, count) ->
 			if count > 0
@@ -79,11 +80,39 @@ app.get '/button', (req, res) ->
 					donateCount: count
 					loggedIn: true
 					user: req.session.user
+					url: url
 			else
 				res.render 'button',
 					donateCount: count
 					loggedIn: false
 					user: req.session.user
+					url: url
+					
+app.post '/button', (req, res) ->
+	url = req.body.url;
+	log "url is #{url}"
+
+	log "req.session.user", req.session.user
+
+	if !isLoggedIn(req)
+		res.render 'index',
+			loggedIn: false
+			messages: getMessages(req)
+	else
+		donate req.session.user.id, url, (err, msg) ->
+			if msg == 'ok'
+				userDonatedCount req.session.user.id, url, (err, count) ->
+					res.render 'button',
+						donateCount: count
+						loggedIn: true
+						user: req.session.user
+						url: url
+			else
+				res.render 'button',
+						error: 'Could not donate'
+						loggedIn: true
+						messages: getMessages(req)
+						url: url
 
 app.get '/new', (req, res) ->
 	res.render 'new',
@@ -150,7 +179,7 @@ initDb = ->
 		insert into donates values (
 			'http://google.fi/',
 			'test',
-			4
+			0
 		)"""
 
 
