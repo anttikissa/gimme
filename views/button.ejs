@@ -8,25 +8,42 @@
     <link rel=stylesheet href='//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css'>
   </head>
   <body>
-	<form method="POST" >
-		<input type="hidden" name="url" value="<%= url %>">
-		<% if (donateCount == 0) { %>
+
+	<% if (loggedIn) { %>
+	
+	<form method="POST">
+	
+		<% if (donateCount > 0) { %>
+		<%// Logged in, already donated %>
+
+			<button class="gimme-thanks btn btn-small btn-success" type="submit">
+				<i class="glyphicon glyphicon-heart"></i>
+				Thanks!
+			</button>
+			<p><%= donateCount %> donates
+
+		<% } else { %>
+		<%// Logged in, not donated %>
+		
+		<button class="gimme-button btn btn-small btn-primary" type="submit">
+			<i class="glyphicon glyphicon-fire"></i>
+			Gimme
+		</button>
+		
+		<% } %>
+
+	<% } else { %>
+	<%// Not logged in %>
+
+	<form action="/login" method="get" target="_blank">
 		
 		<button class="gimme-button btn btn-small btn-primary" type="submit">
 			<i class="glyphicon glyphicon-fire"></i>
 			Gimme
 		</button>
 
-		<% } else { %>
-
-		<button class="gimme-thanks btn btn-small btn-success" type="submit">
-			<i class="glyphicon glyphicon-heart"></i>
-			Thanks!
-		</button>
-		<p><%= donateCount %> donates
-
-		<% } %>
-
+	<% } %>
+		<input type="hidden" name="url" value="<%= url %>">
 	</form>
 	<small>X number of people have donated Y btc</small>
   </body>
