@@ -180,7 +180,7 @@ port = 3000
 
 process.on 'uncaughtException', (err) ->
 	if err.code == 'EADDRINUSE'
-		log "Port #{3000} already in use."
+		log "Port #{port} already in use."
 		process.exit(1)
 
 	throw err
