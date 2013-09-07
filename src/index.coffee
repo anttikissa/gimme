@@ -1,8 +1,9 @@
 express = require 'express'
 log = require 'basic-log'
-db = require './db'
 
+db = require './db'
 user = require './user'
+donates = require './donates'
 config = require './config'
 parseArgs = require('./args').parseArgs
 
@@ -64,29 +65,36 @@ app.get '/', checkAuth, (req, res) ->
 			user: u
 
 app.get '/button', (req, res) ->
+	#	log "===HEADERS===", req.headers
 	url = req.headers['referer']
-	url = 'http://google.fi/'
+	# Testing testing
+	url ||= 'http://google.fi/'
+	log "Button called from #{url}."
 
-	if !isLoggedIn(req)
-		res.render 'button',
-			donateCount: 0
-			loggedIn: false
-			url: url
-	else
-		# TODO USER
-		userDonatedCount req.session.userId, url, (err, count) ->
-			if count > 0
-				res.render 'button',
-					donateCount: count
-					loggedIn: true
-					user: { id: req.session.userId }
-					url: url
-			else
-				res.render 'button',
-					donateCount: count
-					loggedIn: false
-					user: {id: req.session.userId }
-					url: url
+	donates.getDonates url, (err, donates) ->
+		if !isLoggedIn(req)
+			res.render 'button',
+				donateCount: 0
+				donates: donates
+				loggedIn: false
+				url: url
+		else
+			# TODO USER
+			userDonatedCount req.session.userId, url, (err, count) ->
+				if count > 0
+					res.render 'button',
+						donateCount: count
+						donates: donates
+						loggedIn: true
+						user: { id: req.session.userId }
+						url: url
+				else
+					res.render 'button',
+						donateCount: count
+						donates: donates
+						loggedIn: false
+						user: {id: req.session.userId }
+						url: url
 					
 app.post '/button', (req, res) ->
 	url = req.body.url;

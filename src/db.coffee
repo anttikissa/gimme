@@ -51,16 +51,14 @@ module.exports =
 		this.ignoreErrors "insert into users values ('test2', 'test2', 10)"
 		this.ignoreErrors """
 			create table donates (
-				url varchar(256) primary key not null,
+				url varchar(256) not null,
 				user_id varchar(64),
 				donates integer,
+				primary key(url, user_id),
 				foreign key(user_id) references user(id)
 			)"""
-		this.ignoreErrors """
-			insert into donates values (
-				'http://google.fi/',
-				'test',
-				0
-			)"""
+		this.ignoreErrors "insert into donates values ('http://google.fi/', 'test1', 5)"
+		this.ignoreErrors "insert into donates values ('http://google.fi/', 'test2', 4)"
+		this.ignoreErrors "insert into donates values ('http://cats.sykari.net/', 'test1', 6)"
 
 

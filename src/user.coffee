@@ -1,5 +1,6 @@
-db = require './db'
 log = require 'basic-log'
+
+db = require './db'
 
 module.exports =
 	# List all users
@@ -14,7 +15,8 @@ module.exports =
 			(err, result) ->
 				cb null, result
 
-	# List of all donates
+	# List of all donates of a user
+	# don't know if needed yet
 	getDonates: (id, cb) ->
 		{ id: id, donates: [
 			{ url: 'http://google.fi/', donates: 1 },
