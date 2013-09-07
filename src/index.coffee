@@ -97,29 +97,33 @@ app.get '/button', (req, res) ->
 						url: url
 					
 app.post '/button', (req, res) ->
-	url = req.body.url;
-	log "url is #{url}"
+	url = req.body.url
+	url ||= 'http://google.fi/'
+	log "Button pressed for #{url}."
 
-	if !isLoggedIn(req)
-		res.render 'index',
-			loggedIn: false
-			messages: getMessages(req)
-	else
-		# TODO USER
-		donate req.session.userId, url, (err, msg) ->
-			if msg == 'ok'
-				userDonatedCount req.session.userId, url, (err, count) ->
+	donates.getDonates url, (err, donates) ->
+		# TODO what do we want to do in this case actually?
+		if !isLoggedIn(req)
+			res.render 'index',
+				loggedIn: false
+				messages: getMessages(req)
+		else
+			# TODO USER
+			donate req.session.userId, url, (err, msg) ->
+				if msg == 'ok'
+					userDonatedCount req.session.userId, url, (err, count) ->
+						res.render 'button',
+							donateCount: count
+							donates: donates + 1
+							loggedIn: true
+							user: { id: req.session.userId }
+							url: url
+				else
 					res.render 'button',
-						donateCount: count
-						loggedIn: true
-						user: { id: req.session.userId }
-						url: url
-			else
-				res.render 'button',
-						error: 'Could not donate'
-						loggedIn: true
-						messages: getMessages(req)
-						url: url
+							error: 'Could not donate'
+							loggedIn: true
+							messages: getMessages(req)
+							url: url
 
 app.get '/new', (req, res) ->
 	res.render 'new',

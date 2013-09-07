@@ -23,11 +23,13 @@
 			<i class="glyphicon glyphicon-heart"></i>
 			Thanks!
 		</button>
-		<p><%= donateCount %> donates
 
 		<% } %>
 
 	</form>
+<% if (donateCount > 0) { %>
+	<small>You donated <%= donateCount %> times</small><br>
+<% } %>
 	<small>Total donations: <%= donates %></small><br>
 	<small>[debug] url: <%= url %></small><br>
   </body>
