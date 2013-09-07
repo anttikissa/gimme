@@ -155,10 +155,6 @@ app.get '/logout', (req, res) ->
 	delete req.session.user
 	res.redirect '/'
 
-app.get '/test', (req, res) ->
-	db.queryRow 'select * from user', [], (err, row) ->
-		res.end "got row " + JSON.stringify row
-
 db.init()
 
 port = 3000
