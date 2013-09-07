@@ -13,8 +13,8 @@
 <% } else { %>
 
 		<form method=post action='/login'>
-			<input name=user type=text value=user>
-			<input name=password type=password value='password'>
+			<input name=user type=text value=test1>
+			<input name=password type=password value='pass1'>
 			<input type=submit value='Log in'>
 		</form>
 
@@ -38,27 +38,18 @@
 <% if (loggedIn) { %>
 
 		<h2>Hi, <%= user.id %>!</h2>
+
+		<p>Balance: <%= user.balance %>
+		<p>Fill up your account balance by sending bitcoins to (TODO insert address).
+
 <% } else { %>
 
-<p>Create a new account <a href='/new'>here</a>.
+		<h2>The Gimme button is the awesomest way to collect micro-donations.</h2>
+
+		<p>Try it: <iframe src='/button' style='border: 1px solid #ccc; vertical-align: -40px' width=150 height=80></iframe>
+
+		<p>Create a new account <a href='/new'>here</a> to get started!
 
 <% } %>
-
-		<p style=''>Hello hello hell
-			Hello hello hell
-			Hello hello hell
-			Hello hello hell
-			Hello hello hell
-				Hello hello hell
-					Hello hello hell
-				Hello hello hell
-					Hello hello hell
-				Hello hello hell
-					Hello hello hell
-				Hello hello hell
-					Hello hello hell
-						Hello hello hell
-							Hello hello helloooooo
-
 	</div>
 </body>

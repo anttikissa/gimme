@@ -1,8 +1,9 @@
 express = require 'express'
 log = require 'basic-log'
-db = require './db'
 
+db = require './db'
 user = require './user'
+donates = require './donates'
 config = require './config'
 parseArgs = require('./args').parseArgs
 
@@ -21,7 +22,7 @@ app.use express.session secret: config.sessionSecret
 app.use express.static './static'
 
 isLoggedIn = (req) ->
-	req.session.user?
+	req.session.userId?
 
 # auth middleware
 checkAuth = (req, res, next) ->
@@ -57,64 +58,72 @@ getMessages = (req) ->
 	result
 
 app.get '/', checkAuth, (req, res) ->
-	res.render 'index',
-		loggedIn: true
-		messages: getMessages(req)
-		user: req.session.user
+	user.getUser req.session.userId, (err, u) ->
+		res.render 'index',
+			loggedIn: true
+			messages: getMessages(req)
+			user: u
 
 app.get '/button', (req, res) ->
+	#	log "===HEADERS===", req.headers
 	url = req.headers['referer']
-	url = 'http://google.fi/'
-	log "url is #{url}"
+	# Testing testing
+	url ||= 'http://google.fi/'
+	log "Button called from #{url}."
 
-	log "req.session.user", req.session.user
-
-	if !isLoggedIn(req)
-		res.render 'button',
-			donateCount: 0
-			loggedIn: false
-			user: req.session.user
-			url: url
-	else
-		userDonatedCount req.session.user.id, url, (err, count) ->
-			if count > 0
-				res.render 'button',
-					donateCount: count
-					loggedIn: true
-					user: req.session.user
-					url: url
-			else
-				res.render 'button',
-					donateCount: count
-					loggedIn: false
-					user: req.session.user
-					url: url
-					
-app.post '/button', (req, res) ->
-	url = req.body.url;
-	log "url is #{url}"
-
-	log "req.session.user", req.session.user
-
-	if !isLoggedIn(req)
-		res.render 'index',
-			loggedIn: false
-			messages: getMessages(req)
-	else
-		donate req.session.user.id, url, (err, msg) ->
-			if msg == 'ok'
-				userDonatedCount req.session.user.id, url, (err, count) ->
+	donates.getDonates url, (err, donates) ->
+		if !isLoggedIn(req)
+			res.render 'button',
+				donateCount: 0
+				donates: donates
+				loggedIn: false
+				url: url
+		else
+			# TODO USER
+			userDonatedCount req.session.userId, url, (err, count) ->
+				if count > 0
 					res.render 'button',
 						donateCount: count
+						donates: donates
 						loggedIn: true
-						user: req.session.user
+						user: { id: req.session.userId }
 						url: url
-			else
-				res.render 'button',
-						error: 'Could not donate'
-						loggedIn: true
-						messages: getMessages(req)
+				else
+					res.render 'button',
+						donateCount: count
+						donates: donates
+						loggedIn: false
+						user: {id: req.session.userId }
 						url: url
+					
+app.post '/button', (req, res) ->
+	url = req.body.url
+	url ||= 'http://google.fi/'
+	log "Button pressed for #{url}."
+
+	donates.getDonates url, (err, donates) ->
+		# TODO what do we want to do in this case actually?
+		if !isLoggedIn(req)
+			res.render 'index',
+				loggedIn: false
+				messages: getMessages(req)
+		else
+			# TODO USER
+			donate req.session.userId, url, (err, msg) ->
+				if msg == 'ok'
+					userDonatedCount req.session.userId, url, (err, count) ->
+						res.render 'button',
+							donateCount: count
+							donates: donates + 1
+							loggedIn: true
+							user: { id: req.session.userId }
+							url: url
+				else
+					res.render 'button',
+							error: 'Could not donate'
+							loggedIn: true
+							messages: getMessages(req)
+							url: url
 
 app.get '/new', (req, res) ->
 	res.render 'new',
@@ -155,17 +164,14 @@ app.post '/login', (req, res) ->
 	body = req.body
 	user.checkPassword body.user, body.password, (err, result) ->
 		if result
-			log "RESULT TRUE"
-			req.session.user =
-				id: body.user
+			req.session.userId = body.user
 			res.redirect '/'
 		else
 			pushMessage req, 'Invalid username or password.'
-			log "RESULT UNTRUE"
 			res.redirect '/'
 
 app.get '/logout', (req, res) ->
-	delete req.session.user
+	delete req.session.userId
 	res.redirect '/'
 
 db.init()
@@ -174,7 +180,7 @@ port = 3000
 
 process.on 'uncaughtException', (err) ->
 	if err.code == 'EADDRINUSE'
-		log "Port #{3000} already in use."
+		log "Port #{port} already in use."
 		process.exit(1)
 
 	throw err

@@ -1,5 +1,6 @@
-db = require './db'
 log = require 'basic-log'
+
+db = require './db'
 
 module.exports =
 	# List all users
@@ -7,14 +8,15 @@ module.exports =
 		db.queryRows 'select id, balance from users', [], (err, rows) ->
 			cb null, rows
 
-	# User details
+	# Return user details, undefined if user doesn't exist
 	getUser: (id, cb) ->
 		db.queryRow "select id, balance from users where id=?",
 			[id],
 			(err, result) ->
 				cb null, result
 
-	# List of all donates
+	# List of all donates of a user
+	# don't know if needed yet
 	getDonates: (id, cb) ->
 		{ id: id, donates: [
 			{ url: 'http://google.fi/', donates: 1 },
@@ -48,4 +50,9 @@ module.exports =
 					# This will never fail (of course!)
 					(err, result) ->
 						cb null, true
+
+	deposit: (id, amount, cb) ->
+		db.run 'update users set balance = balance + ? where id = ?', [amount, id],
+			(err, result) ->
+				cb null, result
 

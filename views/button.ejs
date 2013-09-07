@@ -45,6 +45,10 @@
 	<% } %>
 		<input type="hidden" name="url" value="<%= url %>">
 	</form>
-	<small>X number of people have donated Y btc</small>
+<% if (donateCount > 0) { %>
+	<small>You donated <%= donateCount %> times</small><br>
+<% } %>
+	<small>Total donations: <%= donates %></small><br>
+	<small>[debug] url: <%= url %></small><br>
   </body>
 </html>
