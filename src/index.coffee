@@ -159,31 +159,7 @@ app.get '/test', (req, res) ->
 	db.queryRow 'select * from user', [], (err, row) ->
 		res.end "got row " + JSON.stringify row
 
-initDb = ->
-	db.ignoreErrors """
-		create table users (
-			id varchar(64) primary key,
-			pass varchar(64),
-			balance integer
-		)"""
-	db.ignoreErrors "insert into users values ('test1', 'pass1', 5)"
-	db.ignoreErrors "insert into users values ('test2', 'test2', 10)"
-	db.ignoreErrors """
-		create table donates (
-			url varchar(256) primary key,
-			user_id varchar(64),
-			donates integer,
-			foreign key(user_id) references user(id)
-		)"""
-	db.ignoreErrors """
-		insert into donates values (
-			'http://google.fi/',
-			'test',
-			0
-		)"""
-
-
-initDb()
+db.init()
 
 port = 3000
 

@@ -38,4 +38,29 @@ module.exports =
 			log "db.queryRows:", sql
 		db.all sql, args, cb
 
+	# Create tables and inject some test data.
+	# Will spew errors if they're already there - ignore them
+	init: ->
+		this.ignoreErrors """
+			create table users (
+				id varchar(64) primary key,
+				pass varchar(64),
+				balance integer
+			)"""
+		this.ignoreErrors "insert into users values ('test1', 'pass1', 5)"
+		this.ignoreErrors "insert into users values ('test2', 'test2', 10)"
+		this.ignoreErrors """
+			create table donates (
+				url varchar(256) primary key,
+				user_id varchar(64),
+				donates integer,
+				foreign key(user_id) references user(id)
+			)"""
+		this.ignoreErrors """
+			insert into donates values (
+				'http://google.fi/',
+				'test',
+				0
+			)"""
+
 
