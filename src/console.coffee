@@ -2,6 +2,7 @@ log = require 'basic-log'
 db = require './db'
 _ = require 'underscore'
 user = require './user'
+donates = require './donates'
 
 sum = (list) -> list.reduce ((a, b) -> a + b), 0
 
@@ -12,6 +13,13 @@ users = (cb) ->
 		cb err,
 			users: rows
 			totalBalance: totalBalance
+			
+donatesForUrl = (args, cb) ->
+	[url] = args
+	if !url?
+		cb 'usage: donates <url>'
+	else
+		donates.getDonates url, cb
 
 deposit = (args, cb) ->
 	[id, amount] = args
@@ -36,6 +44,8 @@ module.exports.start = ->
 				u, users:   list users
 				d, deposit <userId> <amount>
 				            give user <userId> <amount> donation units
+				do, donates <url>
+				            retrieve number of donates for url
 				<enter>:    restart (terminate with code 100)
 			"""
 
@@ -44,6 +54,7 @@ module.exports.start = ->
 				when 'q', 'quit', 'exit' then process.exit(0)
 				when 'u', 'users' then users
 				when 'd', 'deposit' then (cb) -> deposit(args, cb)
+				when 'do', 'donates' then (cb) -> donatesForUrl(args, cb)
 				when '' then process.exit(100)
 				when 'h', 'help' then help
 				else "Unknown command #{cmd}\n\n" + help
