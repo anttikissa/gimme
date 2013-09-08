@@ -40,7 +40,10 @@ module.exports =
 					else
 						sqlGive = 'insert into donates (url, user_id, donates) values (?, ?, ?)'
 						db.run sqlGive, [ url, userId, 1 ], (err, result) ->
-							cb null, 'ok'
+							if err
+								cb err, 'error: ' + err
+							else
+								cb null, 'ok'
 
 	# TODO other accessors
 	# similar sites, etc.
