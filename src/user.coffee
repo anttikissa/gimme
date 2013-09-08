@@ -45,7 +45,7 @@ module.exports =
 			if existingUser?
 				cb null, false
 			else
-				db.run 'insert into users (id, pass, balance) values (?, ?, 0)',
+				db.run 'insert into users (id, pass, balance) values (?, ?, 10)',
 					[id, pass],
 					# This will never fail (of course!)
 					(err, result) ->
