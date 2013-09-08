@@ -66,6 +66,7 @@ app.get '/button', (req, res) ->
 		else
 			# TODO USER
 			donates.getDonateCount req.session.userId, url, (err, count) ->
+				log "Donate count ", count
 				if count > 0
 					res.render 'button',
 						donateCount: count
@@ -75,9 +76,9 @@ app.get '/button', (req, res) ->
 						url: url
 				else
 					res.render 'button',
-						donateCount: count
+						donateCount: 0
 						donates: totalDonates
-						loggedIn: false
+						loggedIn: true
 						user: {id: req.session.userId }
 						url: url
 					
@@ -94,6 +95,7 @@ app.post '/button', (req, res) ->
 				messages: getMessages(req)
 		else
 			# TODO USER
+			# TODO refactor donate variables
 			donates.donate req.session.userId, url, (err, msg) ->
 				if msg == 'ok'
 					donates.getDonateCount req.session.userId, url, (err, count) ->
