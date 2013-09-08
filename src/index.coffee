@@ -134,6 +134,9 @@ newHandler = (req, res) ->
 	if !body.password?
 		pushMessage req, "Password missing"
 		fail = true
+		
+	# Login the new user
+	req.session.userId = body.user
 	
 	if fail
 		res.render 'new',
